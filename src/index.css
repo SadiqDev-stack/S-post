@@ -74,7 +74,7 @@ body {
     }
 
     .composer {
-        @apply [min-height:100px] [box-sizing:border-box] md:text-[2rem] md:m-[1rem];
+        @apply [min-height:100px] [box-sizing:border-box] md:text-[2rem] md:m-[1rem] 
     }
 
     .composer:focus {

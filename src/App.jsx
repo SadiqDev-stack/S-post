@@ -376,7 +376,7 @@ const App = () => {
                         ]);
                         if (cb) cb();
                     } else if (posts.length === 0) {
-                        setTimeout(fetchPost, timerDelay + 300);
+                        setTimeout(fetchPost, timerDelay + 100);
                     }
                 } catch (err) {
                     console.error("Error loading posts", err);
@@ -481,7 +481,7 @@ const App = () => {
                             maxLength={maxPostContentLength + 1}
                             placeholder="Enter Your Message"
                             className="composer"
-                            rows="200"
+                            
                         ></textarea>
                         <span
                             className={
