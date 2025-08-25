@@ -7,6 +7,7 @@ import {
     createContext,
     useRef
 } from "react";
+
 import axios from "axios";
 
 const appName = "S'Post ";
@@ -39,14 +40,11 @@ function formatTime(timestamp) {
     const date = new Date(parseInt(timestamp));
     const now = new Date();
 
-    // Calculate time difference
     const diffSeconds = Math.floor((now - date) / 1000);
     const diffMinutes = Math.floor(diffSeconds / 60);
     const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
-    const diffWeeks = Math.floor(diffDays / 7);
 
-    // Check if the date is today
     if (date.toDateString() === now.toDateString()) {
         if (diffMinutes < 1) return "Now";
         if (diffMinutes < 60) return `${diffMinutes}min`;
@@ -58,7 +56,6 @@ function formatTime(timestamp) {
         return `${formattedHours}:${formattedMinutes}${period}`;
     }
 
-    // Check if the date is within the same week
     if (diffDays < 7) {
         const days = [
             "Sunday",
@@ -72,7 +69,6 @@ function formatTime(timestamp) {
         return days[date.getDay()];
     }
 
-    // Format date as day/month/year with time
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
@@ -92,7 +88,7 @@ const Bar = ({ Content, name }) => {
         <div
             className="bar"
             style={{
-                display: name == currentBar ? "flex" : "none"
+                display: name === currentBar ? "flex" : "none"
             }}
         >
             {Content}
@@ -100,18 +96,16 @@ const Bar = ({ Content, name }) => {
     );
 };
 
-const Button = ({ name, click, content, active }) => {
-    content ??= name;
-    click ??= () => null;
+const Button = ({ name, click, content }) => {
     const currentBar = useContext(currentBarContext);
-    active = currentBar == name;
+    const active = currentBar === name;
     return (
         <button
             className={active ? "nav active-nav clickable" : "nav clickable"}
             name={name}
             onClick={click}
         >
-            {content}
+            {content ?? name}
         </button>
     );
 };
@@ -119,26 +113,23 @@ const Button = ({ name, click, content, active }) => {
 const Image = ({ src }) => {
     const [loaded, setLoaded] = useState(false);
     const [imgSrc, setImgSrc] = useState(src);
-    const [loadTimer, setLoadTimer] = useState(1);
 
     useEffect(() => {
-        if (loaded == "error") {
-            setLoadTimer(
-                setInterval(() => {
-                    setImgSrc(`${src}?t=${Date.now()}`);
-                }, 300)
-            );
-        } else if (loaded == true) {
-            clearInterval(loadTimer);
+        let interval;
+        if (loaded === "error") {
+            interval = setInterval(() => {
+                setImgSrc(`${src}?t=${Date.now()}`);
+            }, 300);
         }
-    }, [loaded]);
+        return () => clearInterval(interval);
+    }, [loaded, src]);
 
     return (
         <img
             className={
-                loaded == true
+                loaded === true
                     ? "image"
-                    : loaded == "error"
+                    : loaded === "error"
                     ? "error-image image"
                     : "loading-image image"
             }
@@ -149,7 +140,7 @@ const Image = ({ src }) => {
     );
 };
 
-const ImagePicker = ({ onSelect, allowed }) => {
+const ImagePicker = ({ onSelect }) => {
     const [imageUrl, setImageUrl] = useState(null);
     const fileInput = useRef();
 
@@ -159,7 +150,7 @@ const ImagePicker = ({ onSelect, allowed }) => {
             if (onSelect) onSelect(file);
             const url = URL.createObjectURL(file);
             setImageUrl(url);
-            e.target.value = [];
+            e.target.value = ""; // ✅ reset correctly
         }
     };
 
@@ -195,9 +186,7 @@ const Spinner = ({ content, loading = true }) => {
             <div className="spinner"></div>
             <span className="mt-[1rem] text-white font-bold">{content}</span>
         </>
-    ) : (
-        ""
-    );
+    ) : null;
 };
 
 const shortenText = (text, length = 30) => {
@@ -208,7 +197,7 @@ const shortenText = (text, length = 30) => {
 };
 
 const maxContentToShow = 300;
-// post bar
+
 const Post = ({ post, setPosts }) => {
     const { author, _id, image, createdAt, likes, dislikes } = post;
     const [content, setcontent] = useState(
@@ -216,16 +205,16 @@ const Post = ({ post, setPosts }) => {
     );
 
     const toggleContent = () => {
-        const { isShorten, text } = content;
         if (content.isShorten) {
-            setcontent({ text: post.content, isShorten: !isShorten });
+            setcontent({ text: post.content, isShorten: false });
         } else {
             setcontent(shortenText(post.content, maxContentToShow));
         }
     };
 
-    const [likeTimer, setLikeTimer] = useState(1);
-    const likePost = async positive => {
+    const [likeTimer, setLikeTimer] = useState(null);
+
+    const likePost = positive => {
         clearTimeout(likeTimer);
         const timer = setTimeout(async () => {
             const { data } = await axios.post(
@@ -233,45 +222,47 @@ const Post = ({ post, setPosts }) => {
             );
             const { liked } = data;
             if (liked) {
-                setPosts(posts => {
-                    return posts.map(p => {
-                        if (p._id == _id) {
-                            if (positive) {
-                                post.likes += 1;
-                            } else {
-                                post.dislikes += 1;
-                            }
-                        }
-                        return p;
-                    });
-                });
+                setPosts(posts =>
+                    posts.map(p =>
+                        p._id === _id
+                            ? {
+                                  ...p,
+                                  likes: positive ? p.likes + 1 : p.likes,
+                                  dislikes: !positive
+                                      ? p.dislikes + 1
+                                      : p.dislikes
+                              }
+                            : p
+                    )
+                );
             }
         }, timerDelay);
         setLikeTimer(timer);
     };
 
     const copyPost = _id => {
-        navigator.clipboard
-            .writeText(`${endpoints.copyPost}?_id=${_id}&type=app`)
-            .then(() => {
-                alert("post link copied to clipboard, share link to others");
-            });
+        if (navigator.clipboard) {
+            navigator.clipboard
+                .writeText(`${endpoints.copyPost}?_id=${_id}&type=app`)
+                .then(() => {
+                    alert("post link copied to clipboard, share link to others");
+                })
+                .catch(() => alert("Failed to copy link"));
+        }
     };
 
     return (
         <div className={dislikes >= blurDislikes ? "blured post" : "post"}>
             <div className="head">
                 <span className="author">{author} </span>
-                {navigator.clipboard ? (
+                {navigator.clipboard && (
                     <span onClick={() => copyPost(_id)} className="copy">
                         copy 📍
                     </span>
-                ) : (
-                    ""
                 )}
             </div>
 
-            {image && image !== "undefined" ? <Image src={image}></Image> : ""}
+            {image && image !== "undefined" && <Image src={image} />}
             <div onClick={toggleContent} className="content">
                 {content.text}
             </div>
@@ -294,33 +285,10 @@ const Post = ({ post, setPosts }) => {
     );
 };
 
-const dummyPost = [
-    {
-        author: "sadiq stech",
-
-        createdAt: Date.now(),
-        _id: Date.now(),
-        likes: 100,
-        dislikes: 50,
-        content: "hmm this is when am coding in phone guys am so tired wlh 😅😅"
-    },
-    {
-        author: "umar",
-        _id: Date.now(),
-        likes: 100,
-        dislikes: 50,
-        image: "pic.png",
-        createdAt: Date.now(),
-        content:
-            "hello guys come buy caps🎩 lorem sjsoshs sisjsush http://localhost:7700/frontend/user_dashboard.htmlhttp://localhost:7700/frontend/user_dashboard.html🎩"
-    }
-];
-
-// must get name if not found
 const getAuthorName = () => {
     let authorName = localStorage.getItem("authorName");
     if (authorName) authorName = authorName.slice(0, maxAuthorName);
-    return authorName;
+    return authorName || "";
 };
 
 const App = () => {
@@ -330,11 +298,9 @@ const App = () => {
     const [authorName, setAuthorName] = useState(getAuthorName());
     const [posting, setPosting] = useState(false);
     const [posts, setPosts] = useState([]);
-    const [loadedPost, setLoadedPost] = useState(posts.map(p => p._id));
+    const [loadedPost, setLoadedPost] = useState([]);
 
-    const isMaxContentHitted = () => {
-        return postContent.length >= maxPostContentLength;
-    };
+    const isMaxContentHitted = () => postContent.length >= maxPostContentLength;
 
     const postInput = useRef();
     useLayoutEffect(() => {
@@ -361,42 +327,32 @@ const App = () => {
             pData.append(k, postData[k]);
         }
 
-        const createPost = async () => {
-            try {
-                const { data } = await axios.post(endpoints.makePost, pData);
-                const { posted, post } = data;
-                if (posted) {
-                    //  if(post.image) post.image = `${API_BASE_URL}/${post.image}`
-                    setPosts(posts => [...posts, post]);
-                    setLoadedPost(pts => {
-                        pts.push(post._id);
-                        return pts;
-                    });
-                    setCurrentBar("post");
-                    setPostContent("");
-                    setAuthorName(getAuthorName());
-                } else {
-                    alert(data.message);
-                }
-            } catch {
-                alert("network error - posting failed");
-            } finally {
-                setPosting(false);
+        try {
+            const { data } = await axios.post(endpoints.makePost, pData);
+            const { posted, post } = data;
+            if (posted) {
+                setPosts(posts => [...posts, post]);
+                setLoadedPost(pts => [...pts, post._id]);
+                setCurrentBar("post");
+                setPostContent("");
+                setAuthorName(getAuthorName());
+            } else {
+                alert(data.message);
             }
-        };
-
-        createPost();
+        } catch {
+            alert("network error - posting failed");
+        } finally {
+            setPosting(false);
+        }
     };
 
-    // get post
     const postLoadLimit = 20;
     const [loadingPost, setLoadingPost] = useState(false);
-    const [fetchTimer, setFetchTimer] = useState(1);
+    const [fetchTimer, setFetchTimer] = useState(null);
+
     const fetchPost = async cb => {
         clearTimeout(fetchTimer);
-        if (loadingPost) {
-            return;
-        }
+        if (loadingPost) return;
         setLoadingPost(true);
 
         setFetchTimer(
@@ -408,27 +364,23 @@ const App = () => {
                     });
 
                     const { found } = data;
-
-                    let fetchedPost = data.posts
-                        .filter(p => !loadedPost.includes(p._id))
-                        
+                    let fetchedPost = data.posts.filter(
+                        p => !loadedPost.includes(p._id)
+                    );
 
                     if (found && fetchedPost.length) {
-                        setPosts(pts => {
-                            fetchedPost.forEach(post => pts.push(post));
-                            return pts;
-                        });
-                        setLoadedPost(pts => {
-                            fetchedPost.forEach(p => pts.push(p._id));
-                            return pts;
-                        });
+                        setPosts(pts => [...pts, ...fetchedPost]);
+                        setLoadedPost(pts => [
+                            ...pts,
+                            ...fetchedPost.map(p => p._id)
+                        ]);
                         if (cb) cb();
-                    } else if (posts.length == 0) {
+                    } else if (posts.length === 0) {
                         setTimeout(fetchPost, timerDelay + 300);
                     }
                 } catch (err) {
                     console.error("Error loading posts", err);
-                    if (posts.length == 0) setTimeout(fetchPost, timerDelay);
+                    if (posts.length === 0) setTimeout(fetchPost, timerDelay);
                 } finally {
                     setLoadingPost(false);
                 }
@@ -438,17 +390,17 @@ const App = () => {
 
     const postBar = useRef();
 
-    // for author name
     useEffect(() => {
         localStorage.setItem("authorName", authorName);
     }, [authorName]);
 
     const [postScrolledEnd, setPostScrolledEnd] = useState(false);
     useEffect(() => {
-        postBar.current.onscroll = () => {
-            setPostScrolledEnd(scrolledEnd(postBar.current));
-        };
-    }, [postBar.current]);
+        if (!postBar.current) return;
+        const handler = () => setPostScrolledEnd(scrolledEnd(postBar.current));
+        postBar.current.addEventListener("scroll", handler);
+        return () => postBar.current?.removeEventListener("scroll", handler);
+    }, []);
 
     useEffect(() => {
         fetchPost();
@@ -482,7 +434,7 @@ const App = () => {
                             {posts.length ? (
                                 posts.map((p, i) => (
                                     <Post
-                                        key={i}
+                                        key={p._id || i}
                                         post={p}
                                         setPosts={setPosts}
                                     />
@@ -490,10 +442,11 @@ const App = () => {
                             ) : (
                                 <span className="none">
                                     Wait While Post Load ⛔{" "}
-                                    {<Spinner loading />}
+                                    <Spinner loading />
                                 </span>
                             )}
                         </div>
+
                         {postScrolledEnd || isLargeScreen ? (
                             <button
                                 onClick={() => fetchPost()}
@@ -505,9 +458,7 @@ const App = () => {
                             >
                                 {!loadingPost ? "Load More" : "Loading More..."}
                             </button>
-                        ) : (
-                            ""
-                        )}
+                        ) : null}
                     </>
                 }
             />
@@ -516,28 +467,21 @@ const App = () => {
                 Content={
                     <>
                         <h3 className="title">
-                            Post Something To The word ...
+                            Post Something To The world ...
                         </h3>
                         <textarea
                             ref={postInput}
                             value={postContent}
                             onChange={e => {
-                                if (
-                                    !isMaxContentHitted() ||
-                                    e.target.value.length < maxPostContentLength
-                                ) {
-                                    setPostContent(e.target.value);
-                                } else if (isMaxContentHitted()) {
-                                    setPostContent(prev =>
-                                        prev.slice(0, maxPostContentLength)
-                                    );
+                                const val = e.target.value;
+                                if (val.length <= maxPostContentLength) {
+                                    setPostContent(val);
                                 }
-                                // console.log(e.target.value.length, maxPostContentLength)
                             }}
                             maxLength={maxPostContentLength + 1}
                             placeholder="Enter Your Message"
                             className="composer"
-                            row="200"
+                            rows="200"
                         ></textarea>
                         <span
                             className={
@@ -553,12 +497,7 @@ const App = () => {
                                   }`}
                         </span>
 
-                        <ImagePicker
-                            allowed="images/*"
-                            onSelect={fl => {
-                                setPostImage(fl);
-                            }}
-                        />
+                        <ImagePicker onSelect={fl => setPostImage(fl)} />
 
                         <input
                             value={authorName}
@@ -588,9 +527,7 @@ const App = () => {
                             >
                                 Make Post
                             </button>
-                        ) : (
-                            ""
-                        )}
+                        ) : null}
 
                         <div
                             className={
