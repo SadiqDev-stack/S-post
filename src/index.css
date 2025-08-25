@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply w-screen h-screen flex flex-col items-center bg-black text-white;
+    user-select: none;
+}
+
+#root {
+    @apply w-full h-screen flex flex-col bg-black items-center gap-y-5  transition-transform duration-300;
+}
+
+@keyframes postInit {
+    from {
+        top: -100px;
+        opacity: 0;
+    }
+    to {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes shine {
+    from {
+        filter: hue-rotate(0deg);
+    }
+    to {
+        filter: hue-rotate(360deg);
+    }
+}
+
+@layer base {
+    body {
+        @apply md:text-[1.5rem];
+    }
+
+    .appName {
+        @apply font-bold text-white capitalize  text-2xl text-red-300 [animation:shine_1s_0s_infinite] md:text-[3rem];
+    }
+
+    .nav {
+        @apply rounded-lg p-1 font-bold text-white border-[2px] border-white px-4 md:p-3 md:w-[200px] md:text-[2.2rem] active:text-black active:bg-white;
+    }
+
+    .bar {
+        @apply w-full h-full flex flex-col items-center gap-y-2 mt-[4rem] [overflow-y:scroll] md:mt-[20rem];
+    }
+
+    .title {
+        @apply text-[1.5rem] font-bold text-amber-300 md:text-[3rem];
+    }
+
+    .header {
+        @apply self-center w-full flex flex-col items-start px-3 gap-x-[.2rem] bg-black fixed top-0 mt-3 md:mt-[1.5rem] md:gap-y-[2rem] md:w-[90%] z-10;
+    }
+
+    .navs {
+        @apply flex w-full items-center justify-between  z-[5] p-3;
+    }
+
+    .active-nav {
+        @apply bg-white text-black;
+    }
+
+    .composer,
+    .authorInput {
+        @apply bg-transparent border-[2px] rounded-md p-2 text-white w-[90%] outline-0 transition-[all_.5s_0s] md:p-3;
+    }
+
+    .authorInput {
+        @apply w-[60%] p-2 self-start text-[.8rem] m-[1rem] mx-[2rem] md:text-[2rem] md:my-[2rem];
+    }
+
+    .composer {
+        @apply [min-height:100px] [box-sizing:border-box] md:text-[2rem] md:m-[1rem];
+    }
+
+    .composer:focus {
+        @apply bg-gray-500 [transform:scaleY(105%)];
+    }
+
+    .counter {
+        @apply transition duration-300 text-[1rem] font-bold text-gray-500 text-left w-[90%] md:text-[1.5rem] md:mb-[2rem];
+    }
+
+    .imagePicker {
+        @apply w-[80%] [min-height:200px] [max-height:300px] rounded-md [border:2px_dotted_white] p-2 flex items-center justify-center font-bold md:text-[1.5rem] md:my-[1rem] md:[min-height:300px] md:[max-height:800px] md:w-[60%];
+    }
+
+    .fileInput {
+        display: none;
+    }
+
+    .clickable {
+        @apply transition duration-300 active:[transform:scale(.9)];
+    }
+
+    .imagePicker .image {
+        @apply w-full h-full relative transition duration-300;
+    }
+
+    .image {
+        @apply [border-radius:inherit];
+    }
+
+    .loading-image {
+        @apply bg-gray-500;
+    }
+
+    .error-image {
+        @apply bg-red-300;
+    }
+
+    .postBtn {
+        @apply bg-green-500 p-2 text-black font-bold rounded-lg border-0 w-[40%] active:bg-green-300 md:text-[2rem] md:mt-[3rem];
+    }
+
+    .loadingBg {
+        @apply absolute w-full h-full bg-[rgba(0,0,0,0.5)] [backdrop-filter:blur(2px)] flex flex-col items-center justify-center;
+    }
+
+    .spinner {
+        @apply w-[30px] h-[30px] rounded-full  border-transparent [border-top:2px_solid_white] animate-spin inline-block;
+    }
+
+    .posts {
+        @apply w-[95%] flex flex-col items-center gap-y-5 text-white [overflow-y:scroll]
+    md:flex-none h-full md:grid md:grid-cols-2 md:items-start md:mt-[3rem] md:gap-[1rem] md:auto-rows-auto md:h-auto pb-[8rem];
+    }
+
+    .post {
+        @apply w-full p-3 rounded-lg border-[1px] border-white h-auto flex flex-col relative [opacity:0] top-[-100px] animate-[postInit_.2s_0s_forwards] gap-y-[.5rem] md:w-[95%] md:[min-height:300px] md:items-start md:justify-around md:gap-y-[1rem];
+    }
+
+    .post .head {
+        @apply w-full flex items-center justify-between;
+    }
+
+    .post .head .copy {
+        @apply text-gray-200 font-bold text-sm md:text-3xl active:bg-[rgba(255,255,255,.3)];
+    }
+
+    .post .author {
+        @apply font-bold text-white text-xl md:text-3xl md:ml-[1rem];
+    }
+
+    .post .content {
+        @apply text-gray-300 text-[.9rem] p-3 active:bg-[rgba(255,255,255,.3)] w-full md:text-xl [max-height:350px] [overflow-y:scroll] md:[max-height:650px];
+    }
+
+    .post .image {
+        @apply my-3 relative [min-height:200px] [max-height:600px] w-[90%] self-center border-0 md:[max-height:500px];
+    }
+
+    .post .date {
+        @apply font-bold text-sm text-gray-400 md:text-xl;
+    }
+
+    .post .feet {
+        @apply flex items-center justify-between w-[90%] self-end md:text-xl;
+    }
+
+    .post .likes,
+    .post .dislikes {
+        @apply font-bold text-[1.2rem] md:text-[1.5rem];
+    }
+
+    .none {
+        @apply w-screen text-red-500 text-center flex items-center justify-center gap-x-[1rem] absolute self-center mt-[50%] font-bold text-xl md:text-4xl md:mt-[50%];
+    }
+
+    .blured {
+        @apply [filter:blur(10px)];
+    }
+
+    .break-text {
+        word-break: break-all; /* Break at any character */
+        /* OR */
+        overflow-wrap: anywhere; /* Modern way */
+                @apply whitespace-pre-line
+    }
+
+    .loading-btn {
+        @apply w-[70%] p-2 bg-white font-bold capitalize text-black rounded-md absolute bottom-0 active:bg-black active:text-white md:text-2xl m-0;
+    }
+
+    .inactive {
+        pointer-events: none;
+        @apply text-gray-500;
+    }
+}

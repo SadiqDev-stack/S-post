@@ -1,0 +1,16 @@
+{
+    "short_name": "S'Post",
+    "name": "Fast Public Posting App",
+    "icons": [
+        {
+            "src": "/logo.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/",
+    "background_color": "#000000",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "description": "Small Fast public Posting App"
+}
