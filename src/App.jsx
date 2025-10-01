@@ -25,7 +25,7 @@ const timerDelay = 200; // ms
 const blurDislikes = 100;
 const maxPostContentLength = 5000;
 const maxAuthorName = 25;
-const isLargeScreen = innerWidth >= 500 && innerHeight >= 700;
+const isLargeScreen = typeof innerWidth == "number" ? (innerWidth >= 600 && innerHeight >= 600) : true
 
 const scrollLap = 50;
 const scrolledEnd = ele => {
