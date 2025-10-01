@@ -606,7 +606,7 @@ video {
 }
 
 .bar {
-  margin-top: 4rem;
+  margin-top: 1rem;
   display: flex;
   height: 100%;
   width: 100%;
@@ -618,7 +618,7 @@ video {
 
 @media (min-width: 768px) {
   .bar {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
   }
 }
 
@@ -750,7 +750,7 @@ video {
 @media (min-width: 768px) {
   .counter {
     margin-bottom: 2rem;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -1090,11 +1090,12 @@ video {
   position: absolute;
   bottom: 0px;
   margin: 0px;
-  width: 70%;
+  max-width: 50%;
   border-radius: 0.375rem;
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
   padding: 0.5rem;
+  opacity: .8rem;
   font-weight: 700;
   text-transform: capitalize;
   --tw-text-opacity: 1;
@@ -1112,6 +1113,8 @@ video {
   .loading-btn {
     font-size: 1.2rem;
     line-height: 2rem;
+    width: auto;
+    max-width: 30%;
   }
 }
 
