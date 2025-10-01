@@ -601,7 +601,7 @@ video {
   .nav {
     width: 200px;
     padding: 0.75rem;
-    font-size: 2.2rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -618,7 +618,7 @@ video {
 
 @media (min-width: 768px) {
   .bar {
-    margin-top: 20rem;
+    margin-top: 2rem;
   }
 }
 
@@ -631,7 +631,7 @@ video {
 
 @media (min-width: 768px) {
   .title {
-    font-size: 3rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -655,9 +655,9 @@ video {
 
 @media (min-width: 768px) {
   .header {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     width: 90%;
-    row-gap: 2rem;
+    row-gap: 1.5rem;
   }
 }
 
@@ -725,7 +725,7 @@ video {
 @media (min-width: 768px) {
   .composer {
     margin: 1rem;
-    font-size: 2rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -835,7 +835,7 @@ video {
 @media (min-width: 768px) {
   .postBtn {
     margin-top: 3rem;
-    font-size: 2rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -885,7 +885,7 @@ video {
 
 @media (min-width: 768px) {
   .posts {
-    margin-top: 3rem;
+    margin-top: 2rem;
     display: grid;
     height: auto;
     flex: none;
@@ -944,7 +944,7 @@ video {
 
 @media (min-width: 768px) {
   .post .head .copy {
-    font-size: 1.875rem;
+    font-size: 1rem;
     line-height: 2.25rem;
   }
 }
@@ -981,7 +981,7 @@ video {
 
 @media (min-width: 768px) {
   .post .content {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     line-height: 1.75rem;
     max-height: 650px;
   }
@@ -1014,7 +1014,7 @@ video {
 
 @media (min-width: 768px) {
   .post .date {
-    font-size: 1.25rem;
+    font-size: 1rem;
     line-height: 1.75rem;
   }
 }
@@ -1067,8 +1067,8 @@ video {
 
 @media (min-width: 768px) {
   .none {
-    margin-top: 50%;
-    font-size: 2.25rem;
+    margin-top: 40%;
+    font-size: 1.5rem;
     line-height: 2.5rem;
   }
 }
@@ -1110,7 +1110,7 @@ video {
 
 @media (min-width: 768px) {
   .loading-btn {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     line-height: 2rem;
   }
 }
@@ -1227,7 +1227,7 @@ body {
   }
 }
 
-/* resposive pc */ 
+/* resposive pc 
 @media (min-width: 600px){
   body{
     font-size: 1.2rem;
@@ -1246,4 +1246,4 @@ body {
     margin: 0;
     margin-bottom: .5rem;
   }
-}
+}*/
