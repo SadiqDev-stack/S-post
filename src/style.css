@@ -1226,3 +1226,24 @@ body {
     filter: hue-rotate(360deg);
   }
 }
+
+/* resposive pc */ 
+@media (min-width: 600px){
+  body{
+    font-size: 1.2rem;
+  }
+  
+  .header{
+    max-height: 15%;
+    min-height: 5%;
+  }
+  
+  .navs nav{
+    font-size: 1.2rem;
+  }
+  
+  .navs{
+    margin: 0;
+    margin-bottom: .5rem;
+  }
+}
