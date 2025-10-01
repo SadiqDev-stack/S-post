@@ -573,7 +573,7 @@ video {
 
 @media (min-width: 768px) {
   .appName {
-    font-size: 3rem;
+    font-size: 1.5rem;
   }
 }
 
@@ -600,7 +600,7 @@ video {
 @media (min-width: 768px) {
   .nav {
     width: 200px;
-    padding: 0.75rem;
+    padding: 0.5rem;
     font-size: 1.2rem;
   }
 }
@@ -636,7 +636,7 @@ video {
 }
 
 .header {
-  position: fixed;
+  position: relative;
   top: 0px;
   z-index: 10;
   margin-top: 0.75rem;
