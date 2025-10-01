@@ -961,7 +961,7 @@ video {
 @media (min-width: 768px) {
   .post .author {
     margin-left: 1rem;
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     line-height: 2.25rem;
   }
 }
