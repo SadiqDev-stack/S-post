@@ -23,7 +23,7 @@ const endpoints = {
 
 const timerDelay = 200; // ms
 const blurDislikes = 100;
-const maxPostContentLength = 5000;
+const maxPostContentLength = 20000;
 const maxAuthorName = 25;
 const isLargeScreen = typeof innerWidth == "number" ? (innerWidth >= 600 && innerHeight >= 600) : true
 
